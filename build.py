@@ -1,10 +1,10 @@
 #! py -3
 
 from subprocess import call, check_output
+from os import remove, makedirs, environ
 from argparse import ArgumentParser
 from os.path import dirname, exists
 from shutil import rmtree, copyfile
-from os import remove, makedirs
 from glob import glob
 
 ASSETS_PATH = "assets"
@@ -113,7 +113,7 @@ def add_icon(binary):
     call(["rcedit", "--set-icon", ASSETS_PATH + "/logo.ico", binary])
 
 
-def copy_files(version):
+def copy_files(version, reporting_url):
     copy_file(LIBS_PATH + "/libcurl.dll", BIN_PATH + "/libcurl.dll")
 
     copy_file(LIBS_PATH + "/engines.txt", VARS_PATH + "/engines.txt")
@@ -124,6 +124,12 @@ def copy_files(version):
 
     with open(version_file, "w") as out_file:
         out_file.write(version)
+
+    reporting_file = VARS_PATH + "/reporting.txt"
+    log_print("Creating file: " + reporting_file)
+
+    with open(reporting_file, "w") as out_file:
+        out_file.write(reporting_url)
 
     license_file = VARS_PATH + "/license.txt"
     log_print("Creating file: " + license_file)
@@ -141,6 +147,7 @@ def copy_files(version):
 if __name__ == "__main__":
     assemble_args(PARSER, ARGUMENTS)
     ARGS = PARSER.parse_args()
+    REPORTING_URL = environ.get("SEARCH_DEFLECTOR_REPORTING_URL" + ("_DEBUG" if ARGS.debug else ""))
 
     if ARGS.silent:
         LOG_VERBOSE = False
@@ -177,7 +184,7 @@ if __name__ == "__main__":
         SETUP_BIN = BIN_PATH + "/setup.exe"
         log_print("Building setup binary: " + SETUP_BIN)
 
-        copy_files(ARGS.version)
+        copy_files(ARGS.version, REPORTING_URL)
         compile_file(SOURCE_PATH + "/setup.d", SETUP_BIN, ARGS.debug)
 
         add_icon(SETUP_BIN)
@@ -189,7 +196,7 @@ if __name__ == "__main__":
         UPDATER_BIN = BIN_PATH + "/updater.exe"
         log_print("Building updater binary: " + UPDATER_BIN)
 
-        copy_files(ARGS.version)
+        copy_files(ARGS.version, REPORTING_URL)
         compile_file(SOURCE_PATH + "/updater.d", UPDATER_BIN, ARGS.debug)
 
         add_icon(UPDATER_BIN)
@@ -201,7 +208,7 @@ if __name__ == "__main__":
         DEFLECTOR_BIN = BIN_PATH + "/deflector.exe"
         log_print("Building deflector binary: " + DEFLECTOR_BIN)
 
-        copy_files(ARGS.version)
+        copy_files(ARGS.version, REPORTING_URL)
         compile_file(SOURCE_PATH + "/deflector.d", DEFLECTOR_BIN, ARGS.debug)
 
         add_icon(DEFLECTOR_BIN)
