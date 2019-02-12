@@ -20,6 +20,8 @@ enum string PROJECT_VERSION = import("version.txt");
 enum string ENGINE_TEMPLATES = import("engines.txt");
 /// String of the GitHub issue template.
 enum string ISSUE_TEMPLATE = import("issue.txt");
+/// A jsonstore.io URL to report statistics to.
+enum string REPORT_URL = import("reporting.txt");
 
 /// Creates a message box telling the user there was an error, and redirect to issues page.
 void createErrorDialog(const Exception error) {
