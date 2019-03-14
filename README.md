@@ -75,3 +75,4 @@ Additionally, thanks to all of the people below for reporting the first issues a
  - [@Freyam](https://github.com/Freyam)
  - [@MulverineX](https://github.com/MulverineX)
  - [@fernandex00](https://github.com/fernandex00)
+ - Leilana was here!
